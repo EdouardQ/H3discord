@@ -1,8 +1,8 @@
 import discord
-from discord.ext import commands, tasks
-import os
+from discord.ext import commands
 from dotenv import load_dotenv
-from youtube import YTDLSource
+import os
+import pafy
 
 load_dotenv()
 
@@ -13,61 +13,18 @@ client = discord.Client(intents=intents)
 bot = commands.Bot(command_prefix='!', intents=intents)
 
 
-@bot.command(name='join', help='Tells the bot to join the voice channel')
-async def join(ctx):
-    if not ctx.message.author.voice:
-        await ctx.send("{} is not connected to a voice channel".format(ctx.message.author.name))
-        return
-    else:
-        channel = ctx.message.author.voice.channel
-    await channel.connect()
-
-
-@bot.command(name='leave', help='Fait quitter le bot du salon vocal')
-async def leave(ctx):
-    voice_client = ctx.message.guild.voice_client
-    if voice_client.is_connected():
-        await voice_client.disconnect()
-    else:
-        await ctx.send("The bot is not connected to a voice channel.")
-
-
 @bot.command(name='play', help='To play song')
 async def play(ctx, url):
-    try:
-        server = ctx.message.guild
-        voice_channel = server.voice_client
+    channel = ctx.author.voice.channel
+    await channel.connect()
 
-        async with ctx.typing():
-            filename = await YTDLSource.from_url(url, loop=bot.loop)
-            voice_channel.play(discord.FFmpegPCMAudio(executable="ffmpeg.exe", source=filename))
-        await ctx.send('**Now playing:** {}'.format(filename))
-    except:
-        await ctx.send("The bot is not connected to a voice channel.")
+    video = pafy.new(url)
+    best = video.getbest()
+
+    source = discord.FFmpegPCMAudio(best.url, executable="ffmpeg")
+    ctx.voice_client.play(source, after=None)
 
 
-@bot.command(name='pause', help='This command pauses the song')
-async def pause(ctx):
-    voice_client = ctx.message.guild.voice_client
-    if voice_client.is_playing():
-        await voice_client.pause()
-    else:
-        await ctx.send("The bot is not playing anything at the moment.")
-
-
-@bot.command(name='resume', help='Resumes the song')
-async def resume(ctx):
-    voice_client = ctx.message.guild.voice_client
-    if voice_client.is_paused():
-        await voice_client.resume()
-    else:
-        await ctx.send("The bot was not playing anything before this. Use play_song command")
-
-
-@bot.command(name='stop', help='Stops the song')
-async def stop(ctx):
-    voice_client = ctx.message.guild.voice_client
-    if voice_client.is_playing():
-        await voice_client.stop()
-    else:
-        await ctx.send("The bot is not playing anything at the moment.")
+@bot.command(name='leave', help='Make leave the bot')
+async def leave(ctx):
+    await ctx.voice_client.disconnect()
