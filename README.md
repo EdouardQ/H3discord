@@ -6,13 +6,14 @@
 - pafy
 - PyNaCl
 - youtube_dl
+- requests
 
 ## Features : 
 - hello
 - pierre / feuille / ciseaux
 - musique
 - photo
-- retard ratp
+- retard ratp (https://api-ratp.pierre-grimaud.fr/v4/traffic)
 - Meven
 
 ## Notes

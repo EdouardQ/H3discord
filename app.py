@@ -1,17 +1,61 @@
 import discord
-from discord.ext import commands
+from discord.ext import commands, tasks
 from dotenv import load_dotenv
 import os
 import pafy
+import requests
 
 load_dotenv()
 
 DISCORD_TOKEN = os.getenv("discord_token")
+RATP_URL = "https://api-ratp.pierre-grimaud.fr/v4/traffic"
+RAPT_CHANNEL_ID = 983651171094921226
 
 intents = discord.Intents().all()
 client = discord.Client(intents=intents)
 bot = commands.Bot(command_prefix='!', intents=intents)
 
+
+# Hello
+
+@bot.command(name='hello', help='Say hello')
+async def hello(ctx):
+    await ctx.channel.send('Hello {0.author.mention}'.format(ctx.message))
+
+
+# Ratp
+
+@tasks.loop(seconds=900)#15 mins
+async def ratp_task():
+    request = requests.get(RATP_URL)
+    data = request.json()['result']
+
+    channel = bot.get_channel(RAPT_CHANNEL_ID)
+
+    alerts = {'metros': [], 'rers': [], 'tramways': []}
+
+    for line in data['metros']:
+        if line['slug'] == 'normal': # A CHANGER POUR TEST
+            alerts['metros'].append(line)
+
+    for line in data['rers']:
+        if line['slug'] == 'normal': # A CHANGER POUR TEST
+            alerts['rers'].append(line)
+
+    for line in data['tramways']:
+        if line['slug'] == 'normal': # A CHANGER POUR TEST
+            alerts['tramways'].append(line)
+
+    if alerts['metros']:
+        for line in alerts['metros']:
+            msg = "Ligne : " + line['line'] + " - " + line['title'] + "\n" + line['message']
+            # await channel.send(msg)   #buged
+
+
+
+ratp_task.start()
+
+# Youtube
 
 @bot.command(name='play', help='To play song')
 async def play(ctx, url):
