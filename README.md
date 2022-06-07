@@ -3,6 +3,7 @@
 ## Requirements
 - discord.py
 - python-dotenv
+- youtube_dl
 
 ## Features : 
 - hello
