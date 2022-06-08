@@ -1,6 +1,6 @@
 import discord
 
-color = 0xFF6500
+color = 0xFF0000
 
 key_features = {
     'temp' : 'Température',
@@ -17,14 +17,14 @@ def parse_data(data):
 def weather_message(data, location):
     location = location.title()
     message = discord.Embed(
-        title=f'{location} Méteo',
+        title=f'Méteo de : {location} ',
         description=f'Voici la météo vers {location}.',
         color=color
     )
     for key in data:
         message.add_field(
             name=key_features[key],
-            value=str(data[key]),
+            value=str(round(((data[key] - 32) * (5/9)), 2)) + ' °C',
             inline=False
         )
     return message

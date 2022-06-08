@@ -165,11 +165,10 @@ async def leave(ctx):
     await ctx.send("Bye ! :wave:️")
 
 @bot.command(name='meteo', help='Display the weather')
-async def meteo(ctx):
-    location = ctx.content.lower()
-    url = f'http://api.openweathermap.org/data/2.5/weather?q={location}&appid={WEATHER_TOKEN}&units=imperial'
+async def meteo(ctx, city):
+    url = f'http://api.openweathermap.org/data/2.5/weather?q={city}&appid={WEATHER_TOKEN}&units=imperial'
     try:
-        data = parse_data(json.loads(requests.get(url).content)['app'])
-        await ctx.channel.send(embed=weather_message(data, location))
+        data = parse_data(json.loads(requests.get(url).content)['main'])
+        await ctx.channel.send(embed=weather_message(data, city))
     except KeyError:
-        await ctx.channel.send(embed=error_message(location))
+        await ctx.channel.send(embed=error_message(city))
