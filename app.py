@@ -1,15 +1,18 @@
 import discord
 from discord.ext import commands, tasks
 from dotenv import load_dotenv
+from weather import *
 import os
 import pafy
 import requests
+import json
 
 load_dotenv()
 
 DISCORD_TOKEN = os.getenv("discord_token")
 RATP_URL = os.getenv("ratp_url")
 RATP_CHANNEL = os.getenv("ratp_channel")
+WEATHER_TOKEN = os.getenv("weather_token")
 
 intents = discord.Intents().all()
 client = discord.Client(intents=intents)
@@ -158,3 +161,13 @@ async def stop(ctx):
 async def leave(ctx):
     await ctx.voice_client.disconnect()
     await ctx.send("Bye ! :wave:️")
+
+@bot.command(name='meteo', help='Display the weather')
+async def meteo(ctx):
+    location = ctx.content.lower()
+    url = f'http://api.openweathermap.org/data/2.5/weather?q={location}&appid={WEATHER_TOKEN}&units=imperial'
+    try:
+        data = parse_data(json.loads(requests.get(url).content)['app'])
+        await ctx.channel.send(embed=weather_message(data, location))
+    except KeyError:
+        await ctx.channel.send(embed=error_message(location))
