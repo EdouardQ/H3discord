@@ -14,7 +14,7 @@
 ## Features : 
 - météo
 - hello
-- pierre / feuille / ciseaux
+- shifumi
 - musique
 - photo
 - retard ratp (https://api-ratp.pierre-grimaud.fr/v4/traffic)
