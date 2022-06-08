@@ -9,12 +9,11 @@ load_dotenv()
 
 DISCORD_TOKEN = os.getenv("discord_token")
 RATP_URL = "https://api-ratp.pierre-grimaud.fr/v4/traffic"
-RAPT_CHANNEL_ID = 983651171094921226
+RATP_CHANNEL_ID = 983651171094921226
 
 intents = discord.Intents().all()
 client = discord.Client(intents=intents)
 bot = commands.Bot(command_prefix='!', intents=intents)
-
 
 # Hello
 
@@ -27,30 +26,46 @@ async def hello(ctx):
 
 @tasks.loop(seconds=900)#15 mins
 async def ratp_task():
+    await bot.wait_until_ready()
+    channel = bot.get_channel(RATP_CHANNEL_ID)
+
     request = requests.get(RATP_URL)
     data = request.json()['result']
-
-    channel = bot.get_channel(RAPT_CHANNEL_ID)
 
     alerts = {'metros': [], 'rers': [], 'tramways': []}
 
     for line in data['metros']:
-        if line['slug'] == 'normal': # A CHANGER POUR TEST
+        if line['slug'] != 'normal':
             alerts['metros'].append(line)
 
     for line in data['rers']:
-        if line['slug'] == 'normal': # A CHANGER POUR TEST
+        if line['slug'] != 'normal':
             alerts['rers'].append(line)
 
     for line in data['tramways']:
-        if line['slug'] == 'normal': # A CHANGER POUR TEST
+        if line['slug'] != 'normal':
             alerts['tramways'].append(line)
 
-    if alerts['metros']:
-        for line in alerts['metros']:
-            msg = "Ligne : " + line['line'] + " - " + line['title'] + "\n" + line['message']
-            # await channel.send(msg)   #buged
+    msg = ""
 
+    if alerts['metros']:
+        msg += "Métros:\n"
+        for line in alerts['metros']:
+            msg += "\tLigne " + line['line'] + " : " + line['title'] + "\n\t" + line['message'] + "\n"
+
+    if alerts['rers']:
+        msg += "\nRers:\n"
+        for line in alerts['rers']:
+            msg += "\tLigne " + line['line'] + " : " + line['title'] + "\n\t" + line['message'] + "\n"
+
+    if alerts['tramways']:
+        msg += "\nTramways:\n"
+        for line in alerts['tramways']:
+            msg += "\tLigne " + line['line'] + " : " + line['title'] + "\n\t" + line['message'] + "\n"
+
+    if msg != "":
+        msg = "```\n" + msg + "\n```"
+        await channel.send(msg)
 
 
 ratp_task.start()
