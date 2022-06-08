@@ -12,6 +12,7 @@
 - Installer ffmpeg
 
 ## Features : 
+- météo
 - hello
 - pierre / feuille / ciseaux
 - musique
