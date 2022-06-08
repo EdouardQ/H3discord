@@ -8,6 +8,9 @@
 - youtube_dl
 - requests
 
+
+- Installer ffmpeg
+
 ## Features : 
 - hello
 - pierre / feuille / ciseaux
