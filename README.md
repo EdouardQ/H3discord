@@ -15,6 +15,7 @@
 - photo
 - retard ratp (https://api-ratp.pierre-grimaud.fr/v4/traffic)
 - Meven
+- clear
 
 ## Notes
 

@@ -8,12 +8,18 @@ import requests
 load_dotenv()
 
 DISCORD_TOKEN = os.getenv("discord_token")
-RATP_URL = "https://api-ratp.pierre-grimaud.fr/v4/traffic"
-RATP_CHANNEL_ID = 983651171094921226
+RATP_URL = os.getenv("ratp_url")
+RATP_CHANNEL = os.getenv("ratp_channel")
 
 intents = discord.Intents().all()
 client = discord.Client(intents=intents)
 bot = commands.Bot(command_prefix='!', intents=intents)
+
+# Clear
+
+@bot.command(name='clear', help='Clear all msg')
+async def clear(ctx):
+    await ctx.channel.purge()
 
 # Hello
 
@@ -22,12 +28,24 @@ async def hello(ctx):
     await ctx.channel.send('Hello {0.author.mention}'.format(ctx.message))
 
 
+# Image
+@bot.command(name='image', help='Random image')
+async def image(ctx, length=200, height=300):
+    request = requests.get("https://picsum.photos/"+str(length)+"/"+str(height))
+
+    embed = discord.Embed()
+    embed.set_image(url=request.url)
+
+    return await ctx.channel.send(embed=embed)
+
+
+
 # Ratp
 
 @tasks.loop(seconds=900)#15 mins
 async def ratp_task():
     await bot.wait_until_ready()
-    channel = bot.get_channel(RATP_CHANNEL_ID)
+    channel = bot.get_channel(int(RATP_CHANNEL))
 
     request = requests.get(RATP_URL)
     data = request.json()['result']

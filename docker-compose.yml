@@ -1,0 +1,23 @@
+version: "3.8"
+services:
+  mysql:
+    image: mysql:latest
+    container_name: mysql-h3discord
+    working_dir: /application
+    volumes:
+      - .:/application
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_USER=admin
+      - MYSQL_PASSWORD=admin
+    ports:
+      - "3306:3306"
+  phpmyadmin:
+    depends_on:
+      - mysql
+    image: phpmyadmin/phpmyadmin:latest
+    container_name: phpmyadmin-h3discord
+    ports:
+      - '8008:80'
+    environment:
+      PMA_HOST: mysql
