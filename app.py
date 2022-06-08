@@ -56,36 +56,38 @@ async def ratp_task():
     alerts = {'metros': [], 'rers': [], 'tramways': []}
 
     for line in data['metros']:
-        if line['slug'] != 'normal':
+        if not 'normal' in line['slug']:
             alerts['metros'].append(line)
 
     for line in data['rers']:
-        if line['slug'] != 'normal':
+        if not 'normal' in line['slug']:
             alerts['rers'].append(line)
 
     for line in data['tramways']:
-        if line['slug'] != 'normal':
+        if not 'normal' in line['slug']:
             alerts['tramways'].append(line)
 
     msg = ""
 
     if alerts['metros']:
-        msg += "Métros:\n"
+        msg += "Métros:\n```"
         for line in alerts['metros']:
-            msg += "\tLigne " + line['line'] + " : " + line['title'] + "\n\t" + line['message'] + "\n"
+            msg += "Ligne " + line['line'] + " : " + line['title'] + "\n" + line['message'] + "\n"
+        msg += "```"
 
     if alerts['rers']:
-        msg += "\nRers:\n"
+        msg += "\nRers:\n```"
         for line in alerts['rers']:
-            msg += "\tLigne " + line['line'] + " : " + line['title'] + "\n\t" + line['message'] + "\n"
+            msg += "Ligne " + line['line'] + " : " + line['title'] + "\n" + line['message'] + "\n"
+        msg += "```"
 
     if alerts['tramways']:
-        msg += "\nTramways:\n"
+        msg += "\nTramways:\n```"
         for line in alerts['tramways']:
-            msg += "\tLigne " + line['line'] + " : " + line['title'] + "\n\t" + line['message'] + "\n"
+            msg += "Ligne " + line['line'] + " : " + line['title'] + "\n" + line['message'] + "\n"
+        msg += "```"
 
     if msg != "":
-        msg = "```\n" + msg + "\n```"
         await channel.send(msg)
 
 
