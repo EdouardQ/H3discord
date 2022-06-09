@@ -22,6 +22,7 @@ bot = commands.Bot(command_prefix='!', intents=intents)
 
 connection = db_tools.connection()
 
+
 # Clear
 
 @bot.command(name='clear', help='Clear all msg')
@@ -35,14 +36,15 @@ async def clear(ctx):
 async def hello(ctx):
     await ctx.channel.send('Hello {0.author.mention}'.format(ctx.message))
 
+
 # History
 
 @bot.listen()
 async def on_command(ctx):
     db_tools.add_cmd(connection, str(ctx.message.content), str(ctx.message.author))
 
-
 # Image
+
 @bot.command(name='image', help='Random image')
 async def image(ctx, length=200, height=300):
     request = requests.get("https://picsum.photos/" + str(length) + "/" + str(height))

@@ -7,6 +7,8 @@
 - PyNaCl
 - youtube_dl
 - requests
+- mysql-connector-python
+
 
 
 - Installer ffmpeg
