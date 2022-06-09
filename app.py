@@ -33,12 +33,6 @@ async def clear(ctx):
 async def hello(ctx):
     await ctx.channel.send('Hello {0.author.mention}'.format(ctx.message))
 
-# Meven
-
-@bot.command(name='meven', help='retard Meven')
-async def meven(ctx):
-    await ctx.channel.send('En effet Meven est en retard'.format(ctx.message))
-
 # Image
 @bot.command(name='image', help='Random image')
 async def image(ctx, length=200, height=300):
@@ -61,7 +55,13 @@ async def meteo(ctx, city):
     except KeyError:
         await ctx.channel.send(embed=weather.error_message(city))
 
+# Meven
 
+@bot.command(name='meven', help='retard Méven')
+async def meven(ctx):
+    await ctx.channel.send('En effet Méven est en retard'.format(ctx.message))
+
+    
 # Ratp
 
 @tasks.loop(seconds=900)  # 15 mins
