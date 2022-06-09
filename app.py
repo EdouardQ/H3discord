@@ -58,7 +58,14 @@ async def image(ctx, length=200, height=300):
 # Météo
 
 @bot.command(name='meteo', help='Display the weather')
-async def meteo(ctx, city):
+async def meteo(ctx):
+
+    city = ctx.message.content[7:]
+
+    if city == None or city == '':
+        embed = discord.Embed(title="", description="Veuillez saisir le nom d'une ville avec la commande",color=discord.Color.red())
+        return await ctx.send(embed=embed)
+
     url = f'http://api.openweathermap.org/data/2.5/weather?q={city}&appid={WEATHER_TOKEN}&units=imperial'
     try:
         data = weather.parse_data(json.loads(requests.get(url).content)['main'])
