@@ -26,12 +26,6 @@ bot = commands.Bot(command_prefix='!', intents=intents)
 async def clear(ctx):
     await ctx.channel.purge()
 
-# Edouard
-
-@bot.command(name='edouard', help='edouard')
-async def edouard(ctx):
-    await ctx.channel.send('En vrai il est jamais content (sauf avec POE)'.format(ctx.message))
-
 
 # Hello
 
@@ -67,7 +61,7 @@ async def meteo(ctx, city):
 async def meven(ctx):
     await ctx.channel.send('En effet Méven est en retard'.format(ctx.message))
 
-
+    
 # Ratp
 
 @tasks.loop(seconds=900)  # 15 mins
