@@ -33,6 +33,11 @@ async def clear(ctx):
 async def hello(ctx):
     await ctx.channel.send('Hello {0.author.mention}'.format(ctx.message))
 
+# Meven
+
+@bot.command(name='meven', help='retard Meven')
+async def meven(ctx):
+    await ctx.channel.send('En effet Meven est en retard'.format(ctx.message))
 
 # Image
 @bot.command(name='image', help='Random image')
