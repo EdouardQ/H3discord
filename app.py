@@ -1,3 +1,4 @@
+import db_tools
 import discord
 from discord.ext import commands, tasks
 from dotenv import load_dotenv
@@ -19,6 +20,7 @@ intents = discord.Intents().all()
 client = discord.Client(intents=intents)
 bot = commands.Bot(command_prefix='!', intents=intents)
 
+connection = db_tools.connection()
 
 # Clear
 
@@ -32,6 +34,13 @@ async def clear(ctx):
 @bot.command(name='hello', help='Say hello')
 async def hello(ctx):
     await ctx.channel.send('Hello {0.author.mention}'.format(ctx.message))
+
+# History
+
+@bot.listen()
+async def on_command(ctx):
+    db_tools.add_cmd(connection, str(ctx.message.content), str(ctx.message.author))
+
 
 # Image
 @bot.command(name='image', help='Random image')
@@ -55,13 +64,14 @@ async def meteo(ctx, city):
     except KeyError:
         await ctx.channel.send(embed=weather.error_message(city))
 
+
 # Meven
 
 @bot.command(name='meven', help='retard Méven')
 async def meven(ctx):
     await ctx.channel.send('En effet Méven est en retard'.format(ctx.message))
 
-    
+
 # Ratp
 
 @tasks.loop(seconds=900)  # 15 mins
