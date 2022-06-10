@@ -1,4 +1,3 @@
-import db_tools
 import discord
 from discord.ext import commands, tasks
 from dotenv import load_dotenv
@@ -6,79 +5,16 @@ import json
 import os
 import pafy
 import requests
-import shifumi as sh
-import weather
 
 load_dotenv()
 
 DISCORD_TOKEN = os.getenv("discord_token")
 RATP_URL = os.getenv("ratp_url")
 RATP_CHANNEL = os.getenv("ratp_channel")
-WEATHER_TOKEN = os.getenv("weather_token")
 
 intents = discord.Intents().all()
 client = discord.Client(intents=intents)
 bot = commands.Bot(command_prefix='!', intents=intents)
-
-connection = db_tools.connection()
-
-
-# Clear
-
-@bot.command(name='clear', help='Clear all msg')
-async def clear(ctx):
-    await ctx.channel.purge()
-
-
-# Hello
-
-@bot.command(name='hello', help='Say hello')
-async def hello(ctx):
-    await ctx.channel.send('Hello {0.author.mention}'.format(ctx.message))
-
-
-# History
-
-@bot.listen()
-async def on_command(ctx):
-    db_tools.add_cmd(connection, str(ctx.message.content), str(ctx.message.author))
-
-# Image
-
-@bot.command(name='image', help='Random image')
-async def image(ctx, length=200, height=300):
-    request = requests.get("https://picsum.photos/" + str(length) + "/" + str(height))
-
-    embed = discord.Embed()
-    embed.set_image(url=request.url)
-
-    return await ctx.channel.send(embed=embed)
-
-
-# Météo
-
-@bot.command(name='meteo', help='Display the weather')
-async def meteo(ctx):
-
-    city = ctx.message.content[7:]
-
-    if city == None or city == '':
-        embed = discord.Embed(title="", description="Veuillez saisir le nom d'une ville avec la commande",color=discord.Color.red())
-        return await ctx.send(embed=embed)
-
-    url = f'http://api.openweathermap.org/data/2.5/weather?q={city}&appid={WEATHER_TOKEN}&units=imperial'
-    try:
-        data = weather.parse_data(json.loads(requests.get(url).content)['main'])
-        await ctx.channel.send(embed=weather.weather_message(data, city))
-    except KeyError:
-        await ctx.channel.send(embed=weather.error_message(city))
-
-
-# Meven
-
-@bot.command(name='meven', help='retard Méven')
-async def meven(ctx):
-    await ctx.channel.send('En effet Méven est en retard'.format(ctx.message))
 
 
 # Ratp
@@ -130,13 +66,6 @@ async def ratp_task():
 
 
 ratp_task.start()
-
-
-# Shifumi
-
-@bot.command(name='shifumi', help='Play shifumi')
-async def shifumi(ctx, shifumi_player='nothing'):
-    await sh.play(ctx, shifumi_player)
 
 
 # Youtube
@@ -209,3 +138,73 @@ async def stop(ctx):
 async def leave(ctx):
     await ctx.voice_client.disconnect()
     await ctx.send("Bye ! :wave:️")
+
+
+"""
+# Clear
+
+@bot.command(name='clear', help='Clear all msg')
+async def clear(ctx):
+    await ctx.channel.purge()
+
+
+# Hello
+
+@bot.command(name='hello', help='Say hello')
+async def hello(ctx):
+    await ctx.channel.send('Hello {0.author.mention}'.format(ctx.message))
+
+
+# History
+
+@bot.listen()
+async def on_command(ctx):
+    db_tools.add_cmd(connection, str(ctx.message.content), str(ctx.message.author))
+
+# Image
+
+@bot.command(name='image', help='Random image')
+async def image(ctx, length=200, height=300):
+    request = requests.get("https://picsum.photos/" + str(length) + "/" + str(height))
+
+    embed = discord.Embed()
+    embed.set_image(url=request.url)
+
+    return await ctx.channel.send(embed=embed)
+
+
+# Météo
+
+@bot.command(name='meteo', help='Display the weather')
+async def meteo(ctx):
+
+    city = ctx.message.content[7:]
+
+    if city == None or city == '':
+        embed = discord.Embed(title="", description="Veuillez saisir le nom d'une ville avec la commande",color=discord.Color.red())
+        return await ctx.send(embed=embed)
+
+    url = f'http://api.openweathermap.org/data/2.5/weather?q={city}&appid={WEATHER_TOKEN}&units=imperial'
+    try:
+        data = weather.parse_data(json.loads(requests.get(url).content)['main'])
+        await ctx.channel.send(embed=weather.weather_message(data, city))
+    except KeyError:
+        await ctx.channel.send(embed=weather.error_message(city))
+
+
+# Meven
+
+@bot.command(name='meven', help='retard Méven')
+async def meven(ctx):
+    await ctx.channel.send('En effet Méven est en retard'.format(ctx.message))
+
+
+
+
+# Shifumi
+
+@bot.command(name='shifumi', help='Play shifumi')
+async def shifumi(ctx, shifumi_player='nothing'):
+    await sh.play(ctx, shifumi_player)
+
+"""
