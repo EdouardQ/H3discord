@@ -19,7 +19,7 @@ def add_cmd(connection, cmd, user_id):
     try:
         cursor = connection.cursor()
 
-        query = "INSERT INTO history (cmd, user_id, executed_at) VALUES (%s, %s, %s)"
+        query = "INSERT INTO homepage_history (cmd, user_id, executed_at) VALUES (%s, %s, %s)"
         record = (cmd, user_id, datetime.now())
 
         cursor.execute(query, record)

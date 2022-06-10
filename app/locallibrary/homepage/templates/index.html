@@ -1,0 +1,9 @@
+{% if logs %}
+    <ul>
+    {% for log in logs %}
+        <li>{{ log.id }} - {{ log.cmd }} - {{ log.user_id }} - {{ log.executed_at }}</li>
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>No logs are available.</p>
+{% endif %}

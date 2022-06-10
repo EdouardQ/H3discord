@@ -8,6 +8,7 @@
 - youtube_dl
 - requests
 - mysql-connector-python
+- Flask
 
 
 
